@@ -2,59 +2,36 @@ import java.util.ArrayList;
 
 public class Main {
 
-    public static void included(ArrayList <Object> list) {
+    public  ArrayList<Object> flatten(ArrayList<Object> mainList,int dimension) {
+        int size=0;
+        ArrayList<Object> result = new ArrayList<>();
 
-        StringBuilder s = new StringBuilder(list.toString()) ;
-        System.out.println("BEFORE:");
-        System.out.println(s);
-        for (int i = 1; i < s.length(); ++i) {
-            if ( s.charAt(i) == '[' ||s.charAt(i) == ']') {
-                s.deleteCharAt(i);
+        for (Object aMainList : mainList) {
+            if (aMainList instanceof ArrayList && size != dimension) {
+                result.addAll(flatten((ArrayList<Object>) aMainList, dimension - 1));
+                ++size;
+            } else {
+                result.add(aMainList);
             }
         }
-
-        System.out.println("AFTER:");
-        System.out.println(s);
-}
-
-
-
-    public static void included(ArrayList <Object> list,int size) {
-
-        StringBuilder s = new StringBuilder(list.toString()) ;
-        System.out.println("BEFORE:");
-        System.out.println(s);
-        int includeArrRight=0;
-        int includeArrLeft=0;
-
-            for (int i = 1; i <s.length(); i++) {
-                if (s.charAt(i) == '[' && includeArrLeft < size) {
-                    s.deleteCharAt(i);
-                    includeArrLeft++;
-                }
-
-                if (s.charAt(i) == ']' && includeArrRight < size) {
-                    s.deleteCharAt(i);
-                    includeArrRight++;
-                }
-            }
-
-        System.out.println("AFTER:");
-        System.out.println(s);
-
-        //print like ArrayList
-        /*
-        ArrayList<Object> lol = new ArrayList<>();
-        for (int i = 0; i <s.length() ; i++) {
-            lol.add(s.charAt(i));
-        }
-
-        for(Object q : lol){
-            System.out.print(q);
-        }
-        */
-
+        return result;
     }
+
+
+    public ArrayList<Object> flatten(ArrayList<Object> mainList) {
+        ArrayList<Object> newList = new ArrayList<>();
+
+        for (Object element : mainList) {
+            if (element instanceof ArrayList) {
+                newList.addAll(flatten((ArrayList<Object>) element));
+            } else {
+                newList.add(element);
+            }
+        }
+        return newList;
+    }
+
+
 
     public static void main(String[] args) {
 
@@ -63,6 +40,7 @@ public class Main {
         mainList.add(2);
         mainList.add(3);
         mainList.add(4);
+
 
         ArrayList<Object> newList1 = new ArrayList<>();
         newList1.add(5);
@@ -74,10 +52,28 @@ public class Main {
         newList2.add(9);
         newList2.add(10);
 
+        ArrayList<Object> newList3 = new ArrayList<>();
+        newList3.add(99);
 
+        newList2.add(newList3);
         newList1.add(newList2);
         mainList.add(newList1);
 
-        Main.included(mainList,1);
+        Main m = new Main();
+        ArrayList<Object> demoList = m.flatten(mainList);
+
+        for (Object o : demoList) {
+            System.out.print(o+" ");
+        }
+
+        System.out.println();
+
+        demoList = m.flatten(mainList,1);
+
+        for (Object o : demoList) {
+            System.out.print(o+" ");
+        }
     }
 }
+
+
